@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Formationn_Ecommerce.Application.Coupons.Dtos;
 using Formationn_Ecommerce.Application.Coupons.Interfaces;
 using Formationn_Ecommerce.Models.Coupon;
@@ -25,6 +25,7 @@ namespace Formationn_Ecommerce.Controllers
             }
             catch (Exception ex)
             {
+                TempData["error"] = "Error loading coupons.";
                 return View();
             }          
         }
@@ -55,8 +56,9 @@ namespace Formationn_Ecommerce.Controllers
 
                 return View(createCouponViewModel);
             }
-            catch
+            catch (Exception ex)
             {
+                TempData["error"] = "Failed to create coupon.";
                 return View(createCouponViewModel);
             }
         }
@@ -68,13 +70,15 @@ namespace Formationn_Ecommerce.Controllers
                 var couponDto = await _couponService.ReadByIdAsync(couponId);
                 if(couponDto == null)
                 {
+                    TempData["error"] = "Coupon not found.";
                     return RedirectToAction(nameof(CouponIndex));
                 }
                 var couponToDelete = _mapper.Map<DeleteCouponViewModel>(couponDto);
                 return View(couponToDelete);
             }
-            catch
+            catch (Exception ex)
             {
+                TempData["error"] = "Error loading coupon for deletion.";
                 return RedirectToAction(nameof(CouponIndex));
             }
         }
@@ -88,8 +92,9 @@ namespace Formationn_Ecommerce.Controllers
                 TempData["success"] = "Coupon deleted successfully!";
                 return RedirectToAction(nameof(CouponIndex));
             }
-            catch
+            catch (Exception ex)
             {
+                TempData["error"] = "Failed to delete coupon.";
                 return RedirectToAction(nameof(CouponIndex));
             }
         }

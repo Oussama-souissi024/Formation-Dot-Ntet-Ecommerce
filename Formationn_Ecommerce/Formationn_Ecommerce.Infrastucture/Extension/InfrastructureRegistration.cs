@@ -22,6 +22,7 @@ namespace Formationn_Ecommerce.Infrastucture.Extension
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
             services.AddScoped<ICouponRepository, CouponRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
 
             return services;
         }
