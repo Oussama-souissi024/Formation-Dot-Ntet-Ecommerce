@@ -1,4 +1,4 @@
-﻿using Formationn_Ecommerce.Core.Entities.Coupon;
+using Formationn_Ecommerce.Core.Entities.Coupon;
 using Formationn_Ecommerce.Core.Interfaces.Repositories;
 using Formationn_Ecommerce.Core.Interfaces.Repositories.Base;
 using Formationn_Ecommerce.Infrastucture.Persistence.Repository.Base;
@@ -22,65 +22,131 @@ namespace Formationn_Ecommerce.Infrastucture.Persistence.Repository
 
         public async Task<Core.Entities.Coupon.Coupon> AddAsync(Core.Entities.Coupon.Coupon coupon)
         {
-            await _context.Coupons.AddAsync(coupon);
-            await _context.SaveChangesAsync();
-            return coupon;
+            try
+            {
+                // Ajouter le coupon à la base de données
+                await _context.Coupons.AddAsync(coupon);
+                await _context.SaveChangesAsync();
+                return coupon;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erreur lors de l'ajout du coupon: {ex.Message}", ex);
+            }
         }
 
         public async Task<Core.Entities.Coupon.Coupon> ReadByIdAsync(Guid couponId)
         {
-            return await _context.Coupons.FirstOrDefaultAsync(c => c.Id == couponId);
+            try
+            {
+                // Rechercher un coupon par son Id
+                return await _context.Coupons.FirstOrDefaultAsync(c => c.Id == couponId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erreur lors de la lecture du coupon: {ex.Message}", ex);
+            }
         }
 
         public async Task<Core.Entities.Coupon.Coupon> ReadByCouponCodeAsync(string couponCode)
         {
-            return await _context.Coupons.FirstOrDefaultAsync(c => c.CouponCode.ToLower() == couponCode.ToLower());
+            try
+            {
+                // Rechercher un coupon par son code
+                return await _context.Coupons.FirstOrDefaultAsync(c => c.CouponCode.ToLower() == couponCode.ToLower());
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erreur lors de la lecture du coupon par code: {ex.Message}", ex);
+            }
         }
-
 
         public async Task<IEnumerable<Core.Entities.Coupon.Coupon>> ReadAllAsync()
         {
-            return await _context.Coupons.ToListAsync();
+            try
+            {
+                // Récupérer tous les coupons
+                return await _context.Coupons.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erreur lors de la récupération des coupons: {ex.Message}", ex);
+            }
         }
 
         public async Task UpdateAsync(Core.Entities.Coupon.Coupon coupon)
         {
-            _context.Coupons.Update(coupon);
-            await _context.SaveChangesAsync();
+            try
+            {
+                // Mettre à jour le coupon dans la base de données
+                _context.Coupons.Update(coupon);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erreur lors de la mise à jour du coupon: {ex.Message}", ex);
+            }
         }
 
         public async Task DeleteAsync(Guid id)
         {
-            var coupon = await _context.Coupons.FindAsync(id);
-            if( coupon != null)
+            try
             {
-                _context.Coupons.Remove(coupon);
-                await _context.SaveChangesAsync();
+                // Rechercher le coupon à supprimer
+                var coupon = await _context.Coupons.FindAsync(id);
+                if (coupon != null)
+                {
+                    // Supprimer le coupon
+                    _context.Coupons.Remove(coupon);
+                    await _context.SaveChangesAsync();
+                }
             }
-
+            catch (Exception ex)
+            {
+                throw new Exception($"Erreur lors de la suppression du coupon: {ex.Message}", ex);
+            }
         }
 
+        // Implémentation de l'interface IRepository
 
-
-      
-        public Task Remove(Core.Entities.Coupon.Coupon entity)
+        public async Task Remove(Core.Entities.Coupon.Coupon entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                // Supprimer l'entité
+                _context.Coupons.Remove(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erreur lors de la suppression: {ex.Message}", ex);
+            }
         }
 
         public async Task Update(Core.Entities.Coupon.Coupon entity)
         {
-            throw new NotImplementedException();
+            try
+            {
+                // Mettre à jour l'entité
+                _context.Coupons.Update(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erreur lors de la mise à jour: {ex.Message}", ex);
+            }
         }
 
-        Task<IEnumerable<Core.Entities.Coupon.Coupon>> IRepository<Core.Entities.Coupon.Coupon>.GetAllAsync()
+        async Task<IEnumerable<Core.Entities.Coupon.Coupon>> IRepository<Core.Entities.Coupon.Coupon>.GetAllAsync()
         {
-            throw new NotImplementedException();
+            // Réutiliser la méthode existante
+            return await ReadAllAsync();
         }
 
-        Task<Core.Entities.Coupon.Coupon> IRepository<Core.Entities.Coupon.Coupon>.GetByIdAsync(Guid id)
+        async Task<Core.Entities.Coupon.Coupon> IRepository<Core.Entities.Coupon.Coupon>.GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            // Réutiliser la méthode existante
+            return await ReadByIdAsync(id);
         }
     }
 }

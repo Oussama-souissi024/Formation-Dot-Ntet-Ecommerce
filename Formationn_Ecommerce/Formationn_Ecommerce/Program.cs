@@ -5,6 +5,7 @@ using Formationn_Ecommerce.Infrastucture.Persistence.DbInitializer;
 using Formationn_Ecommerce.Application.Common.Extension;
 using Microsoft.EntityFrameworkCore;
 using Formationn_Ecommerce.Mapping.Coupon;
+using Formationn_Ecommerce.Mapping.Category;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(option => option.UseSqlServe
 builder.Services.AddInfrastructureRegistration(builder.Configuration);
 builder.Services.AddServiceRegistraion();
 builder.Services.AddAutoMapper(typeof(CouponMappingProfile));
+builder.Services.AddAutoMapper(typeof(CategoryMappingProfile));
 
 var app = builder.Build();
 

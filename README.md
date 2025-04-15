@@ -1,1 +1,0 @@
-# Formationn.Ntet_Ecommerce

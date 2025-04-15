@@ -5,51 +5,46 @@ using Formationn_Ecommerce.Core.Entities.Identity;
 
 namespace Formationn_Ecommerce.Entities.Orders
 {
+    // Classe qui représente l'en-tête d'une commande dans le système e-commerce
     public class OrderHeader : BaseEntity
     {
-        // ID of the user who placed the order
-        // Links to ApplicationUser table
+        // Identifiant de l'utilisateur qui a passé la commande (clé étrangère)
         [Required]
         [ForeignKey("User")]
         public string UserId { get; set; }
 
-        // Optional coupon code applied to this order
+        // Code de coupon de réduction optionnel appliqué à cette commande
         public string? CouponCode { get; set; }
 
-        // Amount discounted from the order total
-        // Stored with 2 decimal places
+        // Montant de la réduction appliquée à la commande (avec 2 décimales)
         [Column(TypeName = "decimal(10, 2)")]
         public decimal Discount { get; set; }
 
-        // Final total amount of the order after discounts
-        // Required field with 2 decimal places
+        // Montant total final de la commande après réductions (avec 2 décimales)
         [Required]
         [Column(TypeName = "decimal(10, 2)")]
         public decimal OrderTotal { get; set; }
 
-        // Customer contact information
+        // Informations de contact du client
         public string Name { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
 
-        // Timestamp when the order was placed
+        // Date et heure auxquelles la commande a été passée
         [Required]
         public DateTime OrderTime { get; set; }
 
-        // Current status of the order (e.g., Pending, Approved, Shipped)
+        // Statut actuel de la commande (ex: En attente, Approuvée, Expédiée)
         public string Status { get; set; }
 
-        // Stripe payment processing fields
-        // Stores IDs from Stripe for payment tracking
+        // Champs de traitement des paiements Stripe pour le suivi des transactions
         public string? PaymentIntentId { get; set; }
         public string? StripeSessionId { get; set; }
 
-        // Navigation properties for related entities
-        // Links to the user who placed the order
+        // Référence à l'utilisateur qui a passé la commande (relation many-to-one)
         public ApplicationUser User { get; set; }
 
-        // Collection of items in this order
-        // One order can have multiple order details
+        // Collection des articles dans cette commande (relation one-to-many)
         public ICollection<OrderDetails> OrderDetails { get; set; }
     }
 }

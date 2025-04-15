@@ -49,37 +49,40 @@ namespace Formationn_Ecommerce.Infrastucture.Persistence.Repository
         {
             try
             {
-                var existingCategory = _context.Categories.FirstOrDefaultAsync(c => c.Id == categoryToUpdate.Id);
-                if (existingCategory != null)
-                {
-                    _context.Categories.Update(categoryToUpdate);
-                    await SaveChangesAsync();
-                }
+                // Approche simple pour mettre à jour une catégorie
+                _context.Categories.Update(categoryToUpdate);
+                
+                // Sauvegarder les changements dans la base de données
+                await _context.SaveChangesAsync();
             }
             catch(Exception ex)
             {
                 // Log l'exception ou la propager avec plus d'informations
                 throw new Exception($"Erreur lors de la mise à jour de la catégorie: {ex.Message}", ex);
             }
-           
         }
 
         public async Task DeleteAsync(Guid categoryId)
         {
-            // Detach any existing entity with the same ID from the change tracker
-            var existingEntry = _context.ChangeTracker.Entries<Category>()
-                .FirstOrDefault(entry => entry.Entity.Id == categoryId);
-            
-            if (existingEntry != null)
+            try
             {
-                existingEntry.State = EntityState.Detached;
+                // Trouver la catégorie à supprimer
+                var category = await _context.Categories.FindAsync(categoryId);
+                
+                // Vérifier si la catégorie existe
+                if (category != null)
+                {
+                    // Supprimer la catégorie
+                    _context.Categories.Remove(category);
+                    
+                    // Sauvegarder les changements dans la base de données
+                    await _context.SaveChangesAsync();
+                }
             }
-
-            // Create a new instance with just the ID and remove it
-            var category = new Category { Id = categoryId };
-            _context.Categories.Attach(category);
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
+            catch(Exception ex)
+            {
+                throw new Exception($"Erreur lors de la suppression de la catégorie: {ex.Message}", ex);
+            }
         }
 
         // IRepository implementation (inherited methods we're overriding with specific implementations)
